@@ -26,7 +26,7 @@ $$
 \Delta G^{0} = -RT \log\left( C^{0} K_{b} \right)
 $$
 
-where $$R$$ is the gas constant, $$T$$ is the system temperature, $$K_{b}$$ is the binding constant, $$C^{0} = 1660\ \text{\AA}^{3}$$ is the standard concentration. In the context of our _in silico_ approach, this is equal to
+where $$R$$ is the gas constant, $$T$$ is the system temperature, $$K_{b}$$ is the binding constant, $$C^{0} = 1660 \text{Å}^{3}$$ is the standard concentration. In the context of our _in silico_ approach, this is equal to
 
 $$
 \Delta G^{0} = \Delta G_{\text{MetaD}} - RT \log\left( \frac{V^{0}}{V_{\text{restr}} -V_{\text{host}}}\right)
