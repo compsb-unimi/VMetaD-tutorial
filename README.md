@@ -15,6 +15,6 @@ We will discuss all the preliminary steps to set up VMetaD, from the restraining
 #### Post-processing, reweighting and entropic correction
 Finally, we will discuss how to analyze the VMetaD files to get the binding free energy difference, reweighting the free energy surface on apt CVs. We will also discuss how to compute the entropic correction due to the presence of the restraining potential. 
 
-___NB:___This tutorial assumes that you know metadynamics theory and practice in PLUMED (if not, a good start can be the [PLUMED tutorial](https://www.plumed-tutorials.org/lessons/21/004/data/NAVIGATION.html) about it).
+___NB:___ This tutorial assumes that you know metadynamics theory and practice in PLUMED (if not, a good start can be the [PLUMED tutorial](https://www.plumed-tutorials.org/lessons/21/004/data/NAVIGATION.html) about it).
 
 
