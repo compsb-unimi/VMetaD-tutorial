@@ -1,5 +1,5 @@
 # VMetaD-tutorial
-A tutorial to setup and run Volume-based Metadynamics simulations. The original work which explains the theory for Volume-based Metadynamics (VMetaD) is [this](https://doi.org/10.1021/acs.jpclett.9b01183). Some time later, in [this](https://doi.org/10.1021/acs.jctc.1c00649) paper we added some details which we will use in this tutorial.
+A tutorial to setup and run Volume-based Metadynamics simulations. The original work which explains the theory for Volume-based Metadynamics (VMetaD) is [this](https://doi.org/10.1021/acs.jpclett.9b01183). Some time later, in [this](https://doi.org/10.1021/acs.jctc.1c00649) paper we added some details (the RMSD restraining) which we will use in this tutorial.
 
 This guide is divided in different sections
 

@@ -10,7 +10,7 @@ In the case of the sphere, we have the restraining potential defined as
 $$
 U_{\text{s}}(\rho(t)) = 
 \begin{cases}
-  \frac{1}{2}k \left(\rho(t) - \rho_{\text{s}}\right)^{2} ~~~ \text{if }\rho(t) > \rho_{\text{s}} \\
+  k \left(\rho(t) - \rho_{\text{s}}\right)^{2} ~~~ \text{if }\rho(t) > \rho_{\text{s}} \\
   0 ~~~~~~~~~~~~~~~~~~~~~\text{otherwise}
   \end{cases}
 $$

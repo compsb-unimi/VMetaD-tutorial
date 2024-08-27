@@ -54,6 +54,7 @@ We can see that the sphere contains the entire domain, but it is probably too sm
 draw delete 14
 draw sphere {35.28876876831055 34.06196594238281 32.041622161865234} radius 28 resolution 100
 ```
+
 You can see the expected result below
 <p align="center">
   <img src="img/sphere_box.jpg" alt="Alt text" width="50%">
@@ -75,6 +76,7 @@ This PDB file will also be used to perform the rototranslational fit of the host
 ## The PLUMED input file
 _(You can read the following line-by-line description keeping an eye on the `plumed.dat` file in the GitHub folder as a reference)_
 
+### Reference frame setup
 We start with the `WHOLEMOLECULES` instruction, to be sure that lysozyme (`ENTITY0`) will not be broken by the periodic boundary condition, as well as the benzene molecule (`ENTITY1`):
 ```
 WHOLEMOLECULES ENTITY0=1-1284 ENTITY1=1285-1290
@@ -100,3 +102,56 @@ After the definition of the groups, to avoid that the passage in a periodic boun
 WRAPAROUND ATOMS=bnz AROUND=sph
 ```
 Ending the fitting part of the PLUMED input.
+
+### Spherical coordinates definition
+We now compute the position of the center of mass of the atoms defining the reference frame ($$(x,y,z)=(0,0,0)$$ in our CV space), and the center of mass of the ligand:
+```
+sph_center: COM ATOMS=sph
+bnz_center: COM ATOMS=bnz
+
+sph_coord: POSITION ATOM=sph_center NOPBC
+bnz_coord: POSITION ATOM=bnz_center NOPBC
+```
+From the position, we can obtain the cartesian coordinates of the ligand in this reference frame
+```
+abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+```
+and via the usual transformation, obtain the final spherical coordinates $$(\rho,\theta,\varphi)$$
+```
+rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
+theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
+phi: MATHEVAL ARG=abs_x,abs_y FUNC=atan2(y,x) PERIODIC=-pi,pi
+```
+which will be our CVs.
+
+### Restraining
+We now have to impose the spherical restraint. We put a `UPPER_WALLS` which impedes the ligand to go farther than 2.8 nm:
+```
+restr: UPPER_WALLS ARG=rho AT=2.8 KAPPA=10000
+```
+the $$k$$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 0.1 nm he will feel a potential of 100 kJ/mol.
+
+As a last step, we also need to restrain the C-alpha RMSD of the residues that define the reference frame. To compute the RMSD we will use the `ref_ca.pdb` file we already used for the `FIT_TO_TEMPLATE` instruction
+```
+rmsd: RMSD REFERENCE=ref_ca.pdb TYPE=OPTIMAL
+restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=1000.0
+```
+
+### Reweighting CVs
+As anticipated in the theory part, to compute binding free energy differences we will need to reweight our free energy landscape on new apt CVs which will allow us in discriminating efficiently the bound and unbound states. Like in the original work, here we will use again the distance from the origin of the reference frame $$\rho$$ and the number of contacts between the protein and the ligand. This will guarantee that if the guest can be considered not in contact with the host (and thus defining the unbound state), even if $$\rho$$ is large.
+
+The total number of contact $$c$$ is defined with a switching function
+
+$$
+c = \sum_{i,j} \frac{ 1 - \left(\frac{{\bf r}_{ij}}{r_0}\right)^{6} } { 1 - \left(\frac{{\bf r}_{ij}}{r_0}\right)^{12} }
+$$
+
+which runs on all the (heavy) atoms of the protein and all the atoms of the ligand. This is implemented with `COOORDINATION`:
+```
+c: COORDINATION GROUPA=lig GROUPB=prot_noh R_0=0.45
+```
+where we set a $$r_0$$ parameter at 0.45 nm.
+
+### Metadynamics
