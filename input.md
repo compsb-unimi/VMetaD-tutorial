@@ -58,5 +58,45 @@ You can see the expected result below
 <p align="center">
   <img src="img/sphere_box.jpg" alt="Alt text" width="50%">
   <br>
-  <em>Cartoon representation of the lysozyme-benzene complex, including the restraining potential applied within a 3 nm radius of the reference frame center of mass. The boundaries of the simulation box are also highlighted to show that the sphere is entirely contained by the box. </em>
+  <em>Cartoon representation of the lysozyme-benzene complex, including the restraining potential applied within a 2.8 nm radius of the reference frame center of mass. The boundaries of the simulation box are also highlighted to show that the sphere is entirely contained by the box. </em>
 </p>
+
+## The C-alpha RMSD restraining
+One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential. To limit this effect we will put in place a RMSD restraining that will be removed during the reweighting procedure. To be sure to keep the structure stable, we will consider all the C-alpha atoms of the residues considered for defining the reference frame. This is not the case, but in presence of partial folding upon binding effects the involved residues can be removed from this restraint. 
+
+To have a reference structure to be used in PLUMED (see the next section for the input file), we convert the initial structure to the PDB format using `gmx editconf`  (to be sure about the numbering) and keeping only the C-alphas:
+```
+gmx editconf -f starting.gro -o ref_ca.pdb
+grep "CA" ref_ca.pdb > tmpfile && mv tmpfile ref_ca.pdb
+```
+Adding the correct values to the b-factor columns so that PLUMED can consider only the atoms we want to select (see the `ref_ca.pdb` file in the folder for reference).
+This PDB file will also be used to perform the rototranslational fit of the host to fix the reference frame (we can also use two different files with different groups of atoms, if necessary).
+
+## The PLUMED input file
+_(You can read the following line-by-line description keeping an eye on the `plumed.dat` file in the GitHub folder as a reference)_
+
+We start with the `WHOLEMOLECULES` instruction, to be sure that lysozyme (`ENTITY0`) will not be broken by the periodic boundary condition, as well as the benzene molecule (`ENTITY1`):
+```
+WHOLEMOLECULES ENTITY0=1-1284 ENTITY1=1285-1290
+```
+Now that we are sure of the integrity of the structures in PLUMED, we perform the rototranslational fit of the system to make sure that the protein will be in the fixed reference frame position:
+```
+FIT_TO_TEMPLATE REFERENCE=ref_ca.pdb TYPE=OPTIMAL
+```
+
+We then start with the groups definition. We previously prepared a GROMACS index file (`index.ndx`) with all the groups named as intended. As an alternative, you can also define such groups with atom ids.
+```
+prot_noh: GROUP NDX_FILE=index.ndx NDX_GROUP=Protein-H
+sph: GROUP NDX_FILE=index.ndx NDX_GROUP=sphere
+lig: GROUP NDX_FILE=index.ndx NDX_GROUP=ligand
+```
+We have three groups: 
+* `prot_noh`, which contains all the non-hydrogen atoms of the protein (for our multi-eGO potential is equivalent to all the protein, but in all-atom representation it makes a difference);
+* `sph`, which contains the atoms that define the reference frame;
+* `lig`, which contains the atoms of the ligand.
+
+After the definition of the groups, to avoid that the passage in a periodic boundary conditions causes a "jump" of the ligand with respect to the protein, we add a `WRAPAROUND` instruction:
+```
+WRAPAROUND ATOMS=bnz AROUND=sph
+```
+Ending the fitting part of the PLUMED input.
