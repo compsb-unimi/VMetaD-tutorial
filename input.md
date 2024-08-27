@@ -99,7 +99,7 @@ We have three groups:
 
 After the definition of the groups, to avoid that the passage in a periodic boundary conditions causes a "jump" of the ligand with respect to the protein, we add a `WRAPAROUND` instruction:
 ```
-WRAPAROUND ATOMS=bnz AROUND=sph
+WRAPAROUND ATOMS=lig AROUND=sph
 ```
 Ending the fitting part of the PLUMED input.
 
@@ -107,10 +107,10 @@ Ending the fitting part of the PLUMED input.
 We now compute the position of the center of mass of the atoms defining the reference frame ($$(x,y,z)=(0,0,0)$$ in our CV space), and the center of mass of the ligand:
 ```
 sph_center: COM ATOMS=sph
-bnz_center: COM ATOMS=bnz
+lig_center: COM ATOMS=lig
 
 sph_coord: POSITION ATOM=sph_center NOPBC
-bnz_coord: POSITION ATOM=bnz_center NOPBC
+lig_coord: POSITION ATOM=lig_center NOPBC
 ```
 From the position, we can obtain the cartesian coordinates of the ligand in this reference frame
 ```
