@@ -9,7 +9,7 @@ The lysozyme T4 L99A variant is a modified form of the lysozyme enzyme derived f
 </p>
 
 In this tutorial, we will use a structure based on the PDB ID [1L84](https://www.rcsb.org/structure/1L84). The force field used is multi-eGO, a structure-based potential generated via a bayesian approach, trained on all-atom simulations performed with the DES-Amber force field (details in [this paper](https://doi.org/10.26434/chemrxiv-2024-jcmgc)). 
-The main advantages of multi-eGO relies in three main points
+The advantages of multi-eGO rely in three main points
 * The possibility to use 5 fs time steps: multi-eGO implements a united-atom coarse-graining, which removes hydrogens;
 * Absence of coulombian interactions for electrostatics: in multi-eGO, all the non-bonded interactions are included in a Lennard-Jones potential;
 * Implicit solvation: multi-eGO does not have an explicit solvent, resulting in ~10x less particles in the simulation box.

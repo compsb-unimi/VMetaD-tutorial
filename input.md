@@ -94,7 +94,7 @@ lig: GROUP NDX_FILE=index.ndx NDX_GROUP=ligand
 ```
 We have three groups: 
 * `prot_noh`, which contains all the non-hydrogen atoms of the protein (for our multi-eGO potential is equivalent to all the protein, but in all-atom representation it makes a difference);
-* `sph`, which contains the atoms that define the reference frame;
+* `sph`, which contains the atoms that define the reference frame (the C-alpha of the selected residues -see above-);
 * `lig`, which contains the atoms of the ligand.
 
 After the definition of the groups, to avoid that the passage in a periodic boundary conditions causes a "jump" of the ligand with respect to the protein, we add a `WRAPAROUND` instruction:
@@ -145,7 +145,8 @@ As anticipated in the theory part, to compute binding free energy differences we
 The total number of contact $$c$$ is defined with a switching function
 
 $$
-c = \sum_{i,j} \frac{ 1 - \left(\frac{{\bf r}_{ij}}{r_0}\right)^{6} } { 1 - \left(\frac{{\bf r}_{ij}}{r_0}\right)^{12} }
+c = \sum_{i,j} \frac{ 1 - \left(\frac{r_{ij}}{r_0}\right)^{6} } 
+{1 - \left(\frac{r_{ij}}{r_0}\right)^{12} }
 $$
 
 which runs on all the (heavy) atoms of the protein and all the atoms of the ligand. This is implemented with `COOORDINATION`:
@@ -154,4 +155,42 @@ c: COORDINATION GROUPA=lig GROUPB=prot_noh R_0=0.45
 ```
 where we set a $$r_0$$ parameter at 0.45 nm.
 
-### Metadynamics
+### Volume-based Metadynamics
+We now set up the VMetaD:
+```
+METAD ...
+  ARG=rho,theta,phi
+  GRID_MIN=0,0.,-pi
+  GRID_MAX=3.5,pi,pi
+  SIGMA=0.1,pi/16.,pi/8
+  HEIGHT=1.0
+  PACE=2000
+  BIASFACTOR=20
+  TEMP=300
+  LABEL=metad
+  CALC_RCT
+... METAD
+```
+The most exotic option used is `CALC_RCT`, which allows the calculation on the fly of the [Tiwary-Parrinello estimator](https://doi.org/10.1021/jp504920s) that we will use for reweighting.
+
+### Printing
+We finally print all the relevant files that we will use for post-processing and analysis. 
+```
+PRINT ARG=metad.* FILE=metad_data.dat STRIDE=200
+PRINT ARG=rmsd,restr_rmsd.bias FILE=rmsd_restraint.dat STRIDE=200
+PRINT ARG=restr.bias FILE=sphere_restraint.dat STRIDE=200
+PRINT ARG=abs_x,abs_y,abs_z FILE=xyz_coord.dat STRIDE=200
+PRINT ARG=rho,theta,phi FILE=rtp_coord.dat STRIDE=200
+PRINT ARG=c,rho FILE=coord_rho.dat STRIDE=200
+
+FLUSH STRIDE=200
+```
+We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $$(x,y,z)$$ and $$(\rho,\theta,\varphi)=(0,0,0)$$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
+
+___PLEASE NOTE___: all the printing frequencies are synchronized (10 times faster) with the VMetaD `PACE`, and it should be done also for trajectory printing. This allow us to restart safely in case of issues and re-run or re-analyze with new CVs the run, if needed.
+
+### Last advices before launching the simulation
+One issue that can be observed when launching when running VMetaD is the sudden interruption of the simulation with a cryptic error. Please check the position of the ligand: in most cases, the system reached $$(\rho,\theta,\varphi)=(0,0,0)$$, where the derivatives of the potential cannot be defined, and thus PLUMED sends an error. Despite being annoying, this is perfectly normal, and does not invalidate the run. Please restart it from the previous checkpoint (save a checkpoint often!).
+
+### Launch!
+You can now run the VMetaD tutorial. We advice you to run it for (at least) 500 ns. 
