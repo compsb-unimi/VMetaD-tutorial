@@ -3,18 +3,30 @@ A tutorial to setup and run Volume-based Metadynamics simulations. The original 
 
 This guide is divided in different sections
 
-#### Volume-based Metadynamics theory
+#### [Volume-based Metadynamics theory](intro.md)
 A brief introduction to the rationale behind the use of VMetaD.
 
-#### Case study: L99A T4 Lysozyme:Benzene
+#### [Case study: L99A T4 Lysozyme:Benzene](lysozyme_benzene.md)
 We will present the case study for this tutorial, a small engineered protein which binds benzene. We will use, to favor the possibility to test the method without that need of HPC resources, a simplified model called multi-eGO (more details [here](https://doi.org/10.26434/chemrxiv-2024-jcmgc)) which can run on laptop/workstation at the timescales of interest. 
 
-#### Input files preparation
+#### [Input files preparation](input.md)
 We will discuss all the preliminary steps to set up VMetaD, from the restraining potential size to the selection of the atoms that define the reference frame. We will also discuss all the PLUMED instructions to implement the method.
 
-#### Post-processing, reweighting and entropic correction
+#### [Post-processing, reweighting and entropic correction](postprocessing.md)
 Finally, we will discuss how to analyze the VMetaD files to get the binding free energy difference, reweighting the free energy surface on apt CVs. We will also discuss how to compute the entropic correction due to the presence of the restraining potential. 
 
 ___NB:___ This tutorial assumes that you know metadynamics theory and practice in PLUMED (if not, a good start can be the [PLUMED tutorial](https://www.plumed-tutorials.org/lessons/21/004/data/NAVIGATION.html) about it).
 
 
+```mermaid
+flowchart TB
+  A[Volume-based Metadynamics theory intro & overview]
+  A --> B[Case study: L99A T4 Lysozyme:Benzene]
+  B --> C[Input files preparation]
+  C --> D[Post-processing, reweighting and entropic correction]
+  
+  click A "intro.md" "Volume-based Metadynamics theory intro & overview"
+  click B "lysozyme_benzene.md" "Case study: L99A T4 Lysozyme:Benzene"
+  click C "input.md" "Input files preparation"
+  click D "postprocessing.md" "Post-processing, reweighting and entropic correction"
+```
