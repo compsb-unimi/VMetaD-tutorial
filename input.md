@@ -63,14 +63,14 @@ You can see the expected result below
 </p>
 
 ## The C-alpha RMSD restraining
-One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential. To limit this effect we will put in place a RMSD restraining that will be removed during the reweighting procedure. To be sure to keep the structure stable, we will consider all the C-alpha atoms of the residues considered for defining the reference frame. This is not the case, but in presence of partial folding upon binding effects the involved residues can be removed from this restraint. 
+One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential deposited. To limit this effect we will put in place a RMSD restraining that will be removed during the reweighting procedure. To be sure to keep the structure stable, we will define the reference frame of VMetaD on the residues selected for the fit. Another possibility is to remove the residues involved in folding upon binding phenomema from this restraint. 
 
-To have a reference structure to be used in PLUMED (see the next section for the input file), we convert the initial structure to the PDB format using `gmx editconf`  (to be sure about the numbering) and keeping only the C-alphas:
+To have a reference structure to be used in PLUMED (see the next section for the input file), we convert the initial structure to the PDB format using `gmx editconf` (to be sure about the numbering) and keeping only the C-alphas:
 ```
 gmx editconf -f starting.gro -o ref_ca.pdb
 grep "CA" ref_ca.pdb > tmpfile && mv tmpfile ref_ca.pdb
 ```
-Adding the correct values to the b-factor columns so that PLUMED can consider only the atoms we want to select (see the `ref_ca.pdb` file in the folder for reference).
+Adding the correct values to the b-factor columns (or remove the unwanted atoms for the fitting procedure) so that PLUMED can consider only the atoms we want to select (see the `ref_ca.pdb` file in the folder for reference).
 This PDB file will also be used to perform the rototranslational fit of the host to fix the reference frame (we can also use two different files with different groups of atoms, if necessary).
 
 ## The PLUMED input file
@@ -136,7 +136,7 @@ the $$k$$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 
 As a last step, we also need to restrain the C-alpha RMSD of the residues that define the reference frame. To compute the RMSD we will use the `ref_ca.pdb` file we already used for the `FIT_TO_TEMPLATE` instruction
 ```
 rmsd: RMSD REFERENCE=ref_ca.pdb TYPE=OPTIMAL
-restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=1000.0
+restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=250.0
 ```
 
 ### Reweighting CVs
@@ -163,9 +163,9 @@ METAD ...
   GRID_MIN=0,0.,-pi
   GRID_MAX=3.5,pi,pi
   SIGMA=0.1,pi/16.,pi/8
-  HEIGHT=1.0
+  HEIGHT=0.5
   PACE=2000
-  BIASFACTOR=20
+  BIASFACTOR=10
   TEMP=300
   LABEL=metad
   CALC_RCT
@@ -187,10 +187,12 @@ FLUSH STRIDE=200
 ```
 We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $$(x,y,z)$$ and $$(\rho,\theta,\varphi)=(0,0,0)$$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
 
-___PLEASE NOTE___: all the printing frequencies are synchronized (10 times faster) with the VMetaD `PACE`, and it should be done also for trajectory printing. This allow us to restart safely in case of issues and re-run or re-analyze with new CVs the run, if needed.
+___PLEASE NOTE___: all the printing frequencies are synchronized with the VMetaD `PACE` (every 10 print we deposit 1 gaussian), and it should be synchronized also with trajectory printing (I personally suggest the same frequency used for gaussian deposition). This allows us to restart safely in case of issues and re-run or re-analyze with new CVs the run, if needed.
 
 ### Last advices before launching the simulation
 One issue that can be observed when launching when running VMetaD is the sudden interruption of the simulation with a cryptic error. Please check the position of the ligand: in most cases, the system reached $$(\rho,\theta,\varphi)=(0,0,0)$$, where the derivatives of the potential cannot be defined, and thus PLUMED sends an error. Despite being annoying, this is perfectly normal, and does not invalidate the run. Please restart it from the previous checkpoint (save a checkpoint often!).
 
+Another consideration regarding the singularity of the reference frame is its position with respect to the actual binding site. In close proximity of it (let's say less than 2 sigmas in $$\rho$$) even an extremely small movement in any direction makes the ligand move of several sigmas in $$\theta$$ and $$\varphi$$, with the possibility of underestimation of the bias. This could imply the need of longer simulation times to fill up the basin. To limit this effect, we suggest to verify if the origin of the reference frame is farther that 2-3 sigmas in $$\rho$$ from the binding site (the perfect situation would be setting the origin in a point occupied by the host, at 4-5 Å from the binding site).
+
 ### Launch!
-You can now run the VMetaD tutorial. We advice you to run it for (at least) 500 ns. 
+You can now run the VMetaD tutorial. We advice you to run it for (at least) 500 ns. In this example, we run it for 1 µs.
