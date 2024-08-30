@@ -40,7 +40,7 @@ DUMPGRID GRID=ff FILE=reweighted_fes.dat
 From this data we can plot the 2D free energy landscape reweighted on $$\rho$$ and $$c$$:
 
 <p align="center">
-  <img src="img/fes.jpg" alt="Alt text" width="50%">
+  <img src="img/fes.jpg" alt="Alt text" width="75%">
   <br>
   <em>Free energy surface projected along the new CVs.</em>
 </p>
@@ -48,7 +48,7 @@ From this data we can plot the 2D free energy landscape reweighted on $$\rho$$ a
 ### ∆G calculation
 In the GitHub folder you can find a simple python script to get the free energy difference between two basins, `deltaG.py`. You have to input the path of the reweighted FES, the minima and the maxima in x and y for both the basins and it returns the free energy difference. For my run, we defined the two minima and obtained this result:
 ```
-$> python3 deltaG.py reweighted_fes.dat 0.48 0.53 108 115 2. 2.8 0 1
+$> python3 deltaG.py reweighted_fes.dat 0.45 0.55 105 115 2. 2.8 0 0.5
 The free energy difference between basin A and basin B is -3.53 kcal/mol
 ```
 We now have $$\Delta G_{\text{MetaD}}$$, the last step is the calculation of the entropic correction.

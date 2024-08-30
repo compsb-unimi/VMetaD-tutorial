@@ -29,13 +29,13 @@ $$
 where $$R$$ is the gas constant, $$T$$ is the system temperature, $$K_{b}$$ is the binding constant, $$C^{0} = 1660 \text{Å}^{3}$$ is the standard concentration. In the context of our _in silico_ approach, this is equal to
 
 $$
-\Delta G^{0} = \Delta G_{\text{MetaD}} - RT \log\left( \frac{V^{0}}{V_{\text{restr}} -V_{\text{host}}}\right)
+\Delta G^{0} = \Delta G_{\text{MetaD}} + RT \log\left( \frac{V^{0}}{V_{\text{restr}} -V_{\text{host}}}\right)
 $$
 
 where $$\Delta G_{\text{MetaD}}$$ is the free energy difference obtained from the VMetaD calculation, $$V^{0}$$ is the reciprocal of $$C^{0}$$, $$V_{\text{restr}}$$ is the volume included in the restraining potential, and $$V_{\text{host}}$$ is the portion of the host included in the restraining potential. This, in case of a spherical potential, results in
 
 $$
-\Delta G^{0} = \Delta G_{\text{MetaD}} - RT \log\left( \frac{V^{0}}{\frac{4}{3}\pi \rho_{\text{s}}^3 -V_{\text{host}}}\right)
+\Delta G^{0} = \Delta G_{\text{MetaD}} + RT \log\left( \frac{V^{0}}{\frac{4}{3}\pi \rho_{\text{s}}^3 -V_{\text{host}}}\right)
 $$
 
 where $$\rho_{\text{s}}$$ is the radius of the restraining sphere.
