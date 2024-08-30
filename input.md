@@ -15,6 +15,14 @@ After the simulation, we calculate the per-residue root mean square fluctuations
 
 We can see that almost all the C-terminal domain (residues 71-162) does not show large fluctuations, and only few residues are above the (arbitrary) RMSF threshold of 0.15 nm. We thus consider to define the reference frame considering all the residues 71-162 but the five ones with RMSF > 0.15 nm (residues 135, 136, 137, 140, and 141).
 
+## PDB file for reference frame refitting
+To be sure to keep the structure stable during the simulation, we will define the reference frame of VMetaD on the residues selected for the fit. To have a reference structure to be used in PLUMED (see the next section for the input file), we convert the initial structure to the PDB format using `gmx editconf` (to ensure consistency with the numbering) and keeping only the C-alphas:
+```
+gmx editconf -f starting.gro -o ref_ca.pdb
+grep "CA" ref_ca.pdb > tmpfile && mv tmpfile ref_ca.pdb
+```
+Remember to add the correct values to the b-factor columns (and/or removing unwanted atoms for the fitting procedure) telling PLUMED which are the atoms we want to use for the fitting procedure (see the `ref_ca.pdb` file in the folder for reference).
+
 ## Choice of the restraining potential size
 
 We now need to choose the size of the restraint potential. In the [original paper](https://doi.org/10.1021/acs.jpclett.9b01183) we showed that the reliability of the estimates is not affected by the size of the potential. However, we have to keep in mind that we need a part of the box where the ligand can stay far away from the protein in order to represent the unbound state in a satisfactory way. An important point here is that the sphere constraint __must__ be inside the box, otherwise the entropic correction will not accurately account for the loss of configurational space. To visually inspect how large the potential is, and to get a feel for the possible movements of the ligand, we can visualize both the system and the restraint with VMD (downloadable [here](https://www.ks.uiuc.edu/Research/vmd/)).
@@ -61,17 +69,6 @@ You can see the expected result below
   <br>
   <em>Cartoon representation of the lysozyme-benzene complex, including the restraining potential applied within a 2.8 nm radius of the reference frame center of mass. The boundaries of the simulation box are also highlighted to show that the sphere is entirely contained by the box. </em>
 </p>
-
-## The C-alpha RMSD restraining
-One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential deposited. To limit this effect we will put in place a RMSD restraining that will be removed during the reweighting procedure. To be sure to keep the structure stable, we will define the reference frame of VMetaD on the residues selected for the fit. Another possibility is to remove the residues involved in folding upon binding phenomema from this restraint. 
-
-To have a reference structure to be used in PLUMED (see the next section for the input file), we convert the initial structure to the PDB format using `gmx editconf` (to be sure about the numbering) and keeping only the C-alphas:
-```
-gmx editconf -f starting.gro -o ref_ca.pdb
-grep "CA" ref_ca.pdb > tmpfile && mv tmpfile ref_ca.pdb
-```
-Adding the correct values to the b-factor columns (or remove the unwanted atoms for the fitting procedure) so that PLUMED can consider only the atoms we want to select (see the `ref_ca.pdb` file in the folder for reference).
-This PDB file will also be used to perform the rototranslational fit of the host to fix the reference frame (we can also use two different files with different groups of atoms, if necessary).
 
 ## The PLUMED input file
 _(You can read the following line-by-line description keeping an eye on the `plumed.dat` file in the GitHub folder as a reference)_
@@ -133,7 +130,7 @@ restr: UPPER_WALLS ARG=rho AT=2.8 KAPPA=10000
 ```
 the $$k$$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 0.1 nm he will feel a potential of 100 kJ/mol.
 
-As a last step, we also need to restrain the C-alpha RMSD of the residues that define the reference frame. To compute the RMSD we will use the `ref_ca.pdb` file we already used for the `FIT_TO_TEMPLATE` instruction
+One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential deposited. To limit this phenomenon we will put in place a RMSD restraining that will be removed during the reweighting procedure. To compute the RMSD we will use the same atoms included in the `ref_ca.pdb` file instruction
 ```
 rmsd: RMSD REFERENCE=ref_ca.pdb TYPE=OPTIMAL
 restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=250.0
