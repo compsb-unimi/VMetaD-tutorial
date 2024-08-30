@@ -77,4 +77,4 @@ RT \log\left( \frac{V^{0}}{\frac{4}{3}\pi \rho_{\text{s}}^3 -V_{\text{host}}}\ri
 \end{align*}
 $$
 
-And we have a final binding free energy value $$\Delta G^{0}=-(3.53+2.18)$$  kcal/mol$$= -5.71$$ kcal/mol, which is close to the experimental value of $$-5.2\text$$ kcal/mol obtained by Morton _et al._ in [this work](https://doi.org/10.1021/bi00027a006).
+And we have a final binding free energy value $$\Delta G^{0}=-(3.53+2.18)$$  kcal/mol$$= -5.71$$ kcal/mol, which is close to the experimental value of $$-5.2$$ kcal/mol obtained by Morton _et al._ in [this work](https://doi.org/10.1021/bi00027a006).
