@@ -52,3 +52,29 @@ $> python3 deltaG.py reweighted_fes.dat 0.45 0.55 105 115 2. 2.8 0 0.5
 The free energy difference between basin A and basin B is -3.53 kcal/mol
 ```
 We now have $$\Delta G_{\text{MetaD}}$$, the last step is the calculation of the entropic correction.
+
+### Entropic correction calculation
+We have to compute the volume of the protein included in the sphere. To do so, we can again use VMD. After loading the structure, we open the Tk console and select all the atom that are within 2.8 nm from the center of mass we computed in the previous step of the tutorial:
+```
+set sel [atomselect top "sqrt((x-35.28876876831055)^2 + (y-34.06196594238281)^2 + (z-32.041622161865234)^2) < 28.0"]
+```
+having set up this selection, we can write an output PDB file.
+```
+$sel writepdb atoms_in_sphere.pdb
+```
+Having this file, we can use `gmx sasa` to have an estimate of the volume of these atoms:
+```
+gmx sasa -f atoms_in_sphere.pdb -s atoms_in_sphere.pdb -tv volume.xvg
+```
+obtaining a volume of 27.294 nm$$^3$$.
+
+Putting this value and $$\rho_{\text{s}}=2.8$$ nm in the formula we get the entropic correction
+
+$$
+\begin{align*}
+RT \log\left( \frac{V^{0}}{\frac{4}{3}\pi \rho_{\text{s}}^3 -V_{\text{host}}}\right)
+&= -2.18 \text{ kcal/mol}
+\end{align*}
+$$
+
+And we have a final binding free energy value $$\Delta G^{0}=-(3.53+2.18)$$  kcal/mol$$= -5.71$$ kcal/mol, which is close to the experimental value of $$-5.2\text$$ kcal/mol obtained by Morton _et al._ in [this work](https://doi.org/10.1021/bi00027a006).
