@@ -40,7 +40,7 @@ DUMPGRID GRID=ff FILE=reweighted_fes.dat
 From this data we can plot the 2D free energy landscape reweighted on $$\rho$$ and $$c$$:
 
 <p align="center">
-  <img src="img/fes.jpg" alt="Alt text" width="75%">
+  <img src="https://github.com/riccardocapelli/VMetaD-tutorial/blob/main/img/fes.jpg?raw=true" alt="Alt text" width="75%">
   <br>
   <em>Free energy surface projected along the new CVs.</em>
 </p>
