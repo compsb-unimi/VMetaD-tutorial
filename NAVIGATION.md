@@ -20,13 +20,16 @@ ___NB:___ This tutorial assumes that you know metadynamics theory and practice i
 
 ```mermaid
 flowchart TB
-  A[Volume-based Metadynamics theory intro & overview]
-  A --> B[Case study: L99A T4 Lysozyme:Benzene]
-  B --> C[Input files preparation]
-  C --> D[Post-processing, reweighting and entropic correction]
+  A[PLUMED syntax] -.-> C[Theory];
+  B[Metadynamics Tutorial] -.->  C
+  C --> D[Case study]
+  D --> E[Input files]
+  E --> F[Post-processing]
   
-  click A "theory.md" "Volume-based Metadynamics theory intro & overview"
-  click B "lysozyme_benzene.md" "Case study: L99A T4 Lysozyme:Benzene"
-  click C "input.md" "Input files preparation"
-  click D "postprocessing.md" "Post-processing, reweighting and entropic correction"
+  click A "syntax" "This lesson teaches you the basic features of the PLUMED input syntax"
+  click B "metad" "This lesson teaches you how to perform and analyze Metadynamics simulations"
+  click C "theory.md" "Volume-based Metadynamics theory intro & overview"
+  click D "lysozyme_benzene.md" "Case study: L99A T4 Lysozyme:Benzene"
+  click E "input.md" "Input files preparation"
+  click F "postprocessing.md" "Post-processing, reweighting and entropic correction"
 ```
