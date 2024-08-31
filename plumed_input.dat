@@ -1,0 +1,51 @@
+WHOLEMOLECULES ENTITY0=1-1284 ENTITY1=1285-1290
+FIT_TO_TEMPLATE REFERENCE=ref_ca.pdb TYPE=OPTIMAL
+
+prot_noh: GROUP NDX_FILE=index.ndx NDX_GROUP=Protein-H
+sph: GROUP NDX_FILE=index.ndx NDX_GROUP=sphere
+lig: GROUP NDX_FILE=index.ndx NDX_GROUP=ligand
+
+WRAPAROUND ATOMS=lig AROUND=sph
+
+sph_center: COM ATOMS=sph
+lig_center: COM ATOMS=lig
+
+sph_coord: POSITION ATOM=sph_center NOPBC
+lig_coord: POSITION ATOM=lig_center NOPBC
+
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+
+rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
+theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
+phi: MATHEVAL ARG=abs_x,abs_y FUNC=atan2(y,x) PERIODIC=-pi,pi
+
+restr: UPPER_WALLS ARG=rho AT=2.8 KAPPA=10000
+
+rmsd: RMSD REFERENCE=ref_ca.pdb TYPE=OPTIMAL
+restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=250.0
+
+c: COORDINATION GROUPA=lig GROUPB=prot_noh R_0=0.45
+
+METAD ...
+  ARG=rho,theta,phi
+  GRID_MIN=0,0.,-pi
+  GRID_MAX=3.5,pi,pi
+  SIGMA=0.1,pi/16.,pi/8
+  HEIGHT=0.5
+  PACE=2000
+  BIASFACTOR=10
+  TEMP=300
+  LABEL=metad
+  CALC_RCT
+... METAD
+
+PRINT ARG=metad.* FILE=metad_data.dat STRIDE=200
+PRINT ARG=rmsd,restr_rmsd.bias FILE=rmsd_restraint.dat STRIDE=200
+PRINT ARG=restr.bias FILE=sphere_restraint.dat STRIDE=200
+PRINT ARG=abs_x,abs_y,abs_z FILE=xyz_coord.dat STRIDE=200
+PRINT ARG=rho,theta,phi FILE=rtp_coord.dat STRIDE=200
+PRINT ARG=c,rho FILE=coord_rho.dat STRIDE=200
+
+FLUSH STRIDE=200

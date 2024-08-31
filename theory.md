@@ -39,3 +39,5 @@ $$
 $$
 
 where $\rho_{\text{s}}$ is the radius of the restraining sphere.
+
+##### [Back to VMetad home](NAVIGATION.md)
