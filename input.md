@@ -182,7 +182,7 @@ PRINT ARG=c,rho FILE=coord_rho.dat STRIDE=200
 
 FLUSH STRIDE=200
 ```
-We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $$(x,y,z)$$ and $$(\rho,\theta,\varphi)=(0,0,0)$$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
+We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $$(x,y,z)$$ and $$(\rho,\theta,\varphi)$$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
 
 ___PLEASE NOTE___: all the printing frequencies are synchronized with the VMetaD `PACE` (every 10 print we deposit 1 gaussian), and it should be synchronized also with trajectory printing (I personally suggest the same frequency used for gaussian deposition). This allows us to restart safely in case of issues and re-run or re-analyze with new CVs the run, if needed.
 
