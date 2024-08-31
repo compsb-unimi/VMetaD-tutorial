@@ -15,3 +15,5 @@ The advantages of multi-eGO rely in three main points
 * Implicit solvation: multi-eGO does not have an explicit solvent, resulting in ~10x less particles in the simulation box.
 
 Using this potential we are able to reach on consumer-level hardware the same performances of a HPC machine on all-atom potentials, allowing us to run on a workstation the entire tutorial in around 24 h. 
+
+##### [Back to VMetad home](NAVIGATION.md)
