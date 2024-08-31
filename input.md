@@ -75,16 +75,16 @@ _(You can read the following line-by-line description keeping an eye on the `plu
 
 ### Reference frame setup
 We start with the `WHOLEMOLECULES` instruction, to be sure that lysozyme (`ENTITY0`) will not be broken by the periodic boundary condition, as well as the benzene molecule (`ENTITY1`):
-```
+```plumed
 WHOLEMOLECULES ENTITY0=1-1284 ENTITY1=1285-1290
 ```
 Now that we are sure of the integrity of the structures in PLUMED, we perform the rototranslational fit of the system to make sure that the protein will be in the fixed reference frame position:
-```
+```plumed
 FIT_TO_TEMPLATE REFERENCE=ref_ca.pdb TYPE=OPTIMAL
 ```
 
 We then start with the groups definition. We previously prepared a GROMACS index file (`index.ndx`) with all the groups named as intended. As an alternative, you can also define such groups with atom ids.
-```
+```plumed
 prot_noh: GROUP NDX_FILE=index.ndx NDX_GROUP=Protein-H
 sph: GROUP NDX_FILE=index.ndx NDX_GROUP=sphere
 lig: GROUP NDX_FILE=index.ndx NDX_GROUP=ligand
@@ -95,14 +95,14 @@ We have three groups:
 * `lig`, which contains the atoms of the ligand.
 
 After the definition of the groups, to avoid that the passage in a periodic boundary conditions causes a "jump" of the ligand with respect to the protein, we add a `WRAPAROUND` instruction:
-```
+```plumed
 WRAPAROUND ATOMS=lig AROUND=sph
 ```
 Ending the fitting part of the PLUMED input.
 
 ### Spherical coordinates definition
 We now compute the position of the center of mass of the atoms defining the reference frame ($(x,y,z)=(0,0,0)$ in our CV space), and the center of mass of the ligand:
-```
+```plumed
 sph_center: COM ATOMS=sph
 lig_center: COM ATOMS=lig
 
@@ -110,13 +110,13 @@ sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 ```
 From the position, we can obtain the cartesian coordinates of the ligand in this reference frame
-```
+```plumed
 abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
 abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
 abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 ```
 and via the usual transformation, obtain the final spherical coordinates $(\rho,\theta,\varphi)$
-```
+```plumed
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
 phi: MATHEVAL ARG=abs_x,abs_y FUNC=atan2(y,x) PERIODIC=-pi,pi
@@ -125,13 +125,13 @@ which will be our CVs.
 
 ### Restraining
 We now have to impose the spherical restraint. We put a `UPPER_WALLS` which impedes the ligand to go farther than 2.8 nm:
-```
+```plumed
 restr: UPPER_WALLS ARG=rho AT=2.8 KAPPA=10000
 ```
 the $k$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 0.1 nm he will feel a potential of 100 kJ/mol.
 
 One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential deposited. To limit this phenomenon we will put in place a RMSD restraining that will be removed during the reweighting procedure. To compute the RMSD we will use the same atoms included in the `ref_ca.pdb` file instruction
-```
+```plumed
 rmsd: RMSD REFERENCE=ref_ca.pdb TYPE=OPTIMAL
 restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=250.0
 ```
@@ -147,14 +147,14 @@ c = \sum_{i,j} \frac{ 1 - \left(\frac{r_{ij}}{r_0}\right)^{6} }
 $$
 
 which runs on all the (heavy) atoms of the protein and all the atoms of the ligand. This is implemented with `COOORDINATION`:
-```
+```plumed
 c: COORDINATION GROUPA=lig GROUPB=prot_noh R_0=0.45
 ```
 where we set a $r_0$ parameter at 0.45 nm.
 
 ### Volume-based Metadynamics
 We now set up the VMetaD:
-```
+```plumed
 METAD ...
   ARG=rho,theta,phi
   GRID_MIN=0,0.,-pi
@@ -172,7 +172,7 @@ The most exotic option used is `CALC_RCT`, which allows the calculation on the f
 
 ### Printing
 We finally print all the relevant files that we will use for post-processing and analysis. 
-```
+```plumed
 PRINT ARG=metad.* FILE=metad_data.dat STRIDE=200
 PRINT ARG=rmsd,restr_rmsd.bias FILE=rmsd_restraint.dat STRIDE=200
 PRINT ARG=restr.bias FILE=sphere_restraint.dat STRIDE=200
