@@ -8,7 +8,7 @@ As a first step for the VMetaD run, we have to choose the atoms which will const
 After the simulation, we calculate the per-residue root mean square fluctuations (RMSF), which highlights the more dynamic residues.
 
 <p align="center">
-  <img src="img/rmsf.jpg" alt="Alt text" width="50%">
+  <img src="https://github.com/riccardocapelli/VMetaD-tutorial/blob/main/img/rmsf.jpg?raw=true" alt="Alt text" width="50%">
   <br>
   <em>Per-residue root mean square fluctuation (RMSF) computed from a plain MD simulation of lysozyme-benzene complex. The portion of the plot with light blue background represents the C-terminal domain, where the benzene binds.</em>
 </p>
@@ -65,7 +65,7 @@ draw sphere {35.28876876831055 34.06196594238281 32.041622161865234} radius 28 r
 
 You can see the expected result below
 <p align="center">
-  <img src="img/sphere_box.jpg" alt="Alt text" width="50%">
+  <img src="https://github.com/riccardocapelli/VMetaD-tutorial/blob/main/img/sphere_box.jpg?raw=true" alt="Alt text" width="50%">
   <br>
   <em>Cartoon representation of the lysozyme-benzene complex, including the restraining potential applied within a 2.8 nm radius of the reference frame center of mass. The boundaries of the simulation box are also highlighted to show that the sphere is entirely contained by the box. </em>
 </p>
