@@ -15,7 +15,7 @@ U_{\text{s}}(\rho(t)) =
   \end{cases}
 $$
 
-where $$k$$ is the harmonic constant, $$\rho(t)$$ is the distance of the guest center of mass from the center of the restraining sphere, and $$\rho_{\text{s}}$$ is the radius of the restraining sphere.
+where $k$ is the harmonic constant, $\rho(t)$ is the distance of the guest center of mass from the center of the restraining sphere, and $\rho_{\text{s}}$ is the radius of the restraining sphere.
 
 Given enough simulation time, this setup alone can return all the possible binding and unbinding pathways (if that is the only goal). However, considering the fact that VMetaD builds a history-dependent potential, we can also compute the free energy difference between the bound and unbound states (i.e. the binding free energy) when we are at convergence. The main point here is to identify the unbound state in a comprehensive way (we assume that the bound state is well defined in volume). To do this, we reweight the converged free energy landscape and project it onto some new CVs that allow better identification and discrimination of both the bound and unbound states.
 
@@ -26,16 +26,16 @@ $$
 \Delta G^{0} = -RT \log\left( C^{0} K_{b} \right)
 $$
 
-where $$R$$ is the gas constant, $$T$$ is the system temperature, $$K_{b}$$ is the binding constant, $$C^{0} = (1660 \text{Å}^{3})^{-1}$$ is the standard concentration. In the context of our _in silico_ approach, this is equal to
+where $R$ is the gas constant, $T$ is the system temperature, $K_{b}$ is the binding constant, $C^{0} = (1660 \text{Å}^{3})^{-1}$ is the standard concentration. In the context of our _in silico_ approach, this is equal to
 
 $$
 \Delta G^{0} = \Delta G_{\text{MetaD}} + RT \log\left( \frac{V^{0}}{V_{\text{restr}} -V_{\text{host}}}\right)
 $$
 
-where $$\Delta G_{\text{MetaD}}$$ is the free energy difference obtained from the VMetaD calculation, $$V^{0}$$ is the reciprocal of $$C^{0}$$, $$V_{\text{restr}}$$ is the volume included in the restraining potential, and $$V_{\text{host}}$$ is the portion of the host included in the restraining potential. This, in case of a spherical potential, results in
+where $\Delta G_{\text{MetaD}}$ is the free energy difference obtained from the VMetaD calculation, $V^{0}$ is the reciprocal of $C^{0}$, $V_{\text{restr}}$ is the volume included in the restraining potential, and $V_{\text{host}}$ is the portion of the host included in the restraining potential. This, in case of a spherical potential, results in
 
 $$
 \Delta G^{0} = \Delta G_{\text{MetaD}} + RT \log\left( \frac{V^{0}}{\frac{4}{3}\pi \rho_{\text{s}}^3 -V_{\text{host}}}\right)
 $$
 
-where $$\rho_{\text{s}}$$ is the radius of the restraining sphere.
+where $\rho_{\text{s}}$ is the radius of the restraining sphere.
