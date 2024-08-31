@@ -6,10 +6,10 @@ After the end of the simulation, we need to reweight our free energy landscape o
 
 We begin from the reading of the relevant data files (refer to the `plumed.dat` file if you do not remember what is contained in them):
 ```plumed
-rho: READ FILE=coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
-c: READ FILE=coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
-metad: READ FILE=metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
-restr_rmsd: READ FILE=rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
+rho: READ FILE=results/coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
+c: READ FILE=results/coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
+metad: READ FILE=results/metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
+restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
 ```
 After loading the data, we have to perform the reweighting of the metadynamics potential via the [Tiwary-Parrinello estimator](https://doi.org/10.1021/jp504920s). Concurrently, we remove the (almost negligible) contribution of the RMSD restraining, obtaining the final weights for the histogram
 ```plumed
