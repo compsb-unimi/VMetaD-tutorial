@@ -3,7 +3,7 @@ A tutorial to setup and run Volume-based Metadynamics simulations. The original 
 
 This guide is divided in different sections
 
-#### [Volume-based Metadynamics theory](intro.md)
+#### [Volume-based Metadynamics theory](theory.md)
 A brief introduction to the rationale behind the use of VMetaD.
 
 #### [Case study: L99A T4 Lysozyme:Benzene](lysozyme_benzene.md)
@@ -25,7 +25,7 @@ flowchart TB
   B --> C[Input files preparation]
   C --> D[Post-processing, reweighting and entropic correction]
   
-  click A "intro.md" "Volume-based Metadynamics theory intro & overview"
+  click A "theory.md" "Volume-based Metadynamics theory intro & overview"
   click B "lysozyme_benzene.md" "Case study: L99A T4 Lysozyme:Benzene"
   click C "input.md" "Input files preparation"
   click D "postprocessing.md" "Post-processing, reweighting and entropic correction"
