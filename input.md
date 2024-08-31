@@ -101,7 +101,7 @@ WRAPAROUND ATOMS=lig AROUND=sph
 Ending the fitting part of the PLUMED input.
 
 ### Spherical coordinates definition
-We now compute the position of the center of mass of the atoms defining the reference frame ($$(x,y,z)=(0,0,0)$$ in our CV space), and the center of mass of the ligand:
+We now compute the position of the center of mass of the atoms defining the reference frame ($(x,y,z)=(0,0,0)$ in our CV space), and the center of mass of the ligand:
 ```
 sph_center: COM ATOMS=sph
 lig_center: COM ATOMS=lig
@@ -115,7 +115,7 @@ abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
 abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
 abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 ```
-and via the usual transformation, obtain the final spherical coordinates $$(\rho,\theta,\varphi)$$
+and via the usual transformation, obtain the final spherical coordinates $(\rho,\theta,\varphi)$
 ```
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -128,7 +128,7 @@ We now have to impose the spherical restraint. We put a `UPPER_WALLS` which impe
 ```
 restr: UPPER_WALLS ARG=rho AT=2.8 KAPPA=10000
 ```
-the $$k$$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 0.1 nm he will feel a potential of 100 kJ/mol.
+the $k$ value is 10,000 kJ/mol/nm^2, which means that if the ligand is out by 0.1 nm he will feel a potential of 100 kJ/mol.
 
 One effect that we should take into account is the possibility that the ligand, in advanced phases of the simulation, will try to unfold the protein, being the place occupied by it the volume portion with less history-dependent potential deposited. To limit this phenomenon we will put in place a RMSD restraining that will be removed during the reweighting procedure. To compute the RMSD we will use the same atoms included in the `ref_ca.pdb` file instruction
 ```
@@ -137,9 +137,9 @@ restr_rmsd: RESTRAINT ARG=rmsd AT=0. KAPPA=250.0
 ```
 
 ### Reweighting CVs
-As anticipated in the theory part, to compute binding free energy differences we will need to reweight our free energy landscape on new apt CVs which will allow us in discriminating efficiently the bound and unbound states. Like in the original work, here we will use again the distance from the origin of the reference frame $$\rho$$ and the number of contacts between the protein and the ligand. This will guarantee that if the guest can be considered not in contact with the host (and thus defining the unbound state), even if $$\rho$$ is large.
+As anticipated in the theory part, to compute binding free energy differences we will need to reweight our free energy landscape on new apt CVs which will allow us in discriminating efficiently the bound and unbound states. Like in the original work, here we will use again the distance from the origin of the reference frame $\rho$ and the number of contacts between the protein and the ligand. This will guarantee that if the guest can be considered not in contact with the host (and thus defining the unbound state), even if $\rho$ is large.
 
-The total number of contact $$c$$ is defined with a switching function
+The total number of contact $c$ is defined with a switching function
 
 $$
 c = \sum_{i,j} \frac{ 1 - \left(\frac{r_{ij}}{r_0}\right)^{6} } 
@@ -150,7 +150,7 @@ which runs on all the (heavy) atoms of the protein and all the atoms of the liga
 ```
 c: COORDINATION GROUPA=lig GROUPB=prot_noh R_0=0.45
 ```
-where we set a $$r_0$$ parameter at 0.45 nm.
+where we set a $r_0$ parameter at 0.45 nm.
 
 ### Volume-based Metadynamics
 We now set up the VMetaD:
@@ -182,14 +182,14 @@ PRINT ARG=c,rho FILE=coord_rho.dat STRIDE=200
 
 FLUSH STRIDE=200
 ```
-We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $$(x,y,z)$$ and $$(\rho,\theta,\varphi)$$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
+We will have all the VMetaD quantities in `metad_data.dat`, the restraints data in `{rmsd,sphere}_restaint.dat`, the $(x,y,z)$ and $(\rho,\theta,\varphi)$ coordinates in `xyz_coord.dat` and `rtp_coord.dat`, respectively, and the reweighting CVs in `coord_rho.dat`.
 
 ___PLEASE NOTE___: all the printing frequencies are synchronized with the VMetaD `PACE` (every 10 print we deposit 1 gaussian), and it should be synchronized also with trajectory printing (I personally suggest the same frequency used for gaussian deposition). This allows us to restart safely in case of issues and re-run or re-analyze with new CVs the run, if needed.
 
 ### Last advices before launching the simulation
-One issue that can be observed when launching when running VMetaD is the sudden interruption of the simulation with a cryptic error. Please check the position of the ligand: in most cases, the system reached $$(\rho,\theta,\varphi)=(0,0,0)$$, where the derivatives of the potential cannot be defined, and thus PLUMED sends an error. Despite being annoying, this is perfectly normal, and does not invalidate the run. Please restart it from the previous checkpoint (save a checkpoint often!).
+One issue that can be observed when launching when running VMetaD is the sudden interruption of the simulation with a cryptic error. Please check the position of the ligand: in most cases, the system reached $(\rho,\theta,\varphi)=(0,0,0)$, where the derivatives of the potential cannot be defined, and thus PLUMED sends an error. Despite being annoying, this is perfectly normal, and does not invalidate the run. Please restart it from the previous checkpoint (save a checkpoint often!).
 
-Another consideration regarding the singularity of the reference frame is its position with respect to the actual binding site. In close proximity of it (let's say less than 2 sigmas in $$\rho$$) even an extremely small movement in any direction makes the ligand move of several sigmas in $$\theta$$ and $$\varphi$$, with the possibility of underestimation of the bias. This could imply the need of longer simulation times to fill up the basin. To limit this effect, we suggest to verify if the origin of the reference frame is farther that 2-3 sigmas in $$\rho$$ from the binding site (the perfect situation would be setting the origin in a point occupied by the host, at 4-5 Å from the binding site).
+Another consideration regarding the singularity of the reference frame is its position with respect to the actual binding site. In close proximity of it (let's say less than 2 sigmas in $\rho$) even an extremely small movement in any direction makes the ligand move of several sigmas in $\theta$ and $\varphi$, with the possibility of underestimation of the bias. This could imply the need of longer simulation times to fill up the basin. To limit this effect, we suggest to verify if the origin of the reference frame is farther that 2-3 sigmas in $\rho$ from the binding site (the perfect situation would be setting the origin in a point occupied by the host, at 4-5 Å from the binding site).
 
 ### Launch!
 You can now run the VMetaD tutorial. We advice you to run it for (at least) 500 ns. In this example, we run it for 1 µs.
