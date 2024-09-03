@@ -13,10 +13,24 @@ restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORC
 ```
 After loading the data, we have to perform the reweighting of the metadynamics potential via the [Tiwary-Parrinello estimator](https://doi.org/10.1021/jp504920s). Concurrently, we remove the (almost negligible) contribution of the RMSD restraining, obtaining the final weights for the histogram
 ```plumed
+#HIDDEN 
+rho: READ FILE=results/coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
+c: READ FILE=results/coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
+metad: READ FILE=results/metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
+restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
+#ENDHIDDEN
 weights: REWEIGHT_BIAS TEMP=300 ARG=metad.rbias,restr_rmsd.bias
 ```
 Having the weights, we can compute the histogram, considering the data from 200 ns to 1 µs to ignore the out-of-equilibrium portion of the simulation:
 ```plumed
+#HIDDEN 
+rho: READ FILE=results/coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
+c: READ FILE=results/coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
+metad: READ FILE=results/metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
+restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
+
+weights: REWEIGHT_BIAS TEMP=300 ARG=metad.rbias,restr_rmsd.bias
+#ENDHIDDEN
 HISTOGRAM ...
   ARG=rho,c
   GRID_MIN=0.,0
@@ -31,10 +45,52 @@ HISTOGRAM ...
 ```
 This histogram can be converted to a free energy landscape
 ```plumed
+#HIDDEN 
+rho: READ FILE=results/coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
+c: READ FILE=results/coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
+metad: READ FILE=results/metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
+restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
+
+weights: REWEIGHT_BIAS TEMP=300 ARG=metad.rbias,restr_rmsd.bias
+
+HISTOGRAM ...
+  ARG=rho,c
+  GRID_MIN=0.,0
+  GRID_MAX=3.0,160
+  GRID_BIN=300,160
+  KERNEL=DISCRETE
+  LOGWEIGHTS=weights
+  LABEL=histo
+  UPDATE_FROM=200000
+  UPDATE_UNTIL=1000000
+... HISTOGRAM
+#ENDHIDDEN
 ff: CONVERT_TO_FES GRID=histo TEMP=300
 ```
 and finally printed
 ```plumed
+#HIDDEN 
+rho: READ FILE=results/coord_rho.dat VALUES=rho IGNORE_FORCES IGNORE_TIME
+c: READ FILE=results/coord_rho.dat VALUES=c IGNORE_FORCES IGNORE_TIME
+metad: READ FILE=results/metad_data.dat VALUES=metad.* IGNORE_FORCES IGNORE_TIME
+restr_rmsd: READ FILE=results/rmsd_restraint.dat VALUES=restr_rmsd.* IGNORE_FORCES IGNORE_TIME
+
+weights: REWEIGHT_BIAS TEMP=300 ARG=metad.rbias,restr_rmsd.bias
+
+HISTOGRAM ...
+  ARG=rho,c
+  GRID_MIN=0.,0
+  GRID_MAX=3.0,160
+  GRID_BIN=300,160
+  KERNEL=DISCRETE
+  LOGWEIGHTS=weights
+  LABEL=histo
+  UPDATE_FROM=200000
+  UPDATE_UNTIL=1000000
+... HISTOGRAM
+
+ff: CONVERT_TO_FES GRID=histo TEMP=300
+#ENDHIDDEN
 DUMPGRID GRID=ff FILE=reweighted_fes.dat
 ```
 From this data we can plot the 2D free energy landscape reweighted on $\rho$ and $c$:
