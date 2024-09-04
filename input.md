@@ -156,9 +156,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 #ENDHIDDEN
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 ```
 and via the usual transformation, obtain the final spherical coordinates $(\rho,\theta,\varphi)$
 ```plumed
@@ -179,9 +179,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 #ENDHIDDEN
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -209,9 +209,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -240,9 +240,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -283,9 +283,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -320,9 +320,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
@@ -370,9 +370,9 @@ lig_center: COM ATOMS=lig
 sph_coord: POSITION ATOM=sph_center NOPBC
 lig_coord: POSITION ATOM=lig_center NOPBC
 
-abs_x: MATHEVAL ARG=bnz_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
-abs_y: MATHEVAL ARG=bnz_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
-abs_z: MATHEVAL ARG=bnz_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
+abs_x: MATHEVAL ARG=lig_coord.x,sph_coord.x FUNC=x-y PERIODIC=NO
+abs_y: MATHEVAL ARG=lig_coord.y,sph_coord.y FUNC=x-y PERIODIC=NO
+abs_z: MATHEVAL ARG=lig_coord.z,sph_coord.z FUNC=x-y PERIODIC=NO
 
 rho: MATHEVAL ARG=abs_x,abs_y,abs_z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
 theta: MATHEVAL ARG=abs_z,rho FUNC=acos(x/y) PERIODIC=0.,pi
